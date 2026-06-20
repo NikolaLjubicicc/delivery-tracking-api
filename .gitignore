@@ -1,3 +1,14 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Maven build output
+target/
+
+# Environment
+.env
+
 # Compiled class file
 *.class
 
