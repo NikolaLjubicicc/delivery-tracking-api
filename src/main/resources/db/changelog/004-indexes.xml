@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="004-indexes" author="nikola.ljubicic">
+        <createIndex tableName="shipment" indexName="idx_shipment_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="shipment" indexName="idx_shipment_status">
+            <column name="current_status"/>
+        </createIndex>
+
+        <createIndex tableName="shipment" indexName="idx_shipment_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="shipment_status_history" indexName="idx_history_shipment_id">
+            <column name="shipment_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
