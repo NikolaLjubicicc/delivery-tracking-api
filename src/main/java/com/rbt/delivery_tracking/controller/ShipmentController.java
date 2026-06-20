@@ -1,0 +1,56 @@
+package com.rbt.delivery_tracking.controller;
+
+import com.rbt.delivery_tracking.dto.request.ChangeStatusRequest;
+import com.rbt.delivery_tracking.dto.request.CreateShipmentRequest;
+import com.rbt.delivery_tracking.dto.request.UpdateShipmentRequest;
+import com.rbt.delivery_tracking.dto.response.ShipmentResponse;
+import com.rbt.delivery_tracking.service.ShipmentService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/shipments")
+public class ShipmentController {
+
+    private final ShipmentService shipmentService;
+
+    public ShipmentController(ShipmentService shipmentService) {
+        this.shipmentService = shipmentService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ShipmentResponse> create(@Valid @RequestBody CreateShipmentRequest request) {
+        ShipmentResponse response = shipmentService.createShipment(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ShipmentResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(shipmentService.getById(id));
+    }
+
+    @GetMapping("/by-tracking/{trackingNumber}")
+    public ResponseEntity<ShipmentResponse> getByTrackingNumber(@PathVariable String trackingNumber) {
+        return ResponseEntity.ok(shipmentService.getByTrackingNumber(trackingNumber));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ShipmentResponse> update(@PathVariable Long id,
+                                                   @Valid @RequestBody UpdateShipmentRequest request) {
+        return ResponseEntity.ok(shipmentService.updateDescription(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        shipmentService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ShipmentResponse> changeStatus(@PathVariable Long id,
+                                                         @Valid @RequestBody ChangeStatusRequest request) {
+        return ResponseEntity.ok(shipmentService.changeStatus(id, request));
+    }
+}
