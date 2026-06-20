@@ -3,7 +3,9 @@ package com.rbt.delivery_tracking.service;
 import com.rbt.delivery_tracking.dto.request.ChangeStatusRequest;
 import com.rbt.delivery_tracking.dto.request.CreateShipmentRequest;
 import com.rbt.delivery_tracking.dto.request.UpdateShipmentRequest;
+import com.rbt.delivery_tracking.dto.response.PageResponse;
 import com.rbt.delivery_tracking.dto.response.ShipmentResponse;
+import com.rbt.delivery_tracking.dto.response.StatusHistoryResponse;
 import com.rbt.delivery_tracking.entity.Shipment;
 import com.rbt.delivery_tracking.entity.ShipmentStatusHistory;
 import com.rbt.delivery_tracking.entity.User;
@@ -13,8 +15,16 @@ import com.rbt.delivery_tracking.exception.NotFoundException;
 import com.rbt.delivery_tracking.repository.ShipmentRepository;
 import com.rbt.delivery_tracking.repository.ShipmentStatusHistoryRepository;
 import com.rbt.delivery_tracking.repository.UserRepository;
+import com.rbt.delivery_tracking.specification.ShipmentSpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ShipmentService {
@@ -56,6 +66,34 @@ public class ShipmentService {
         Shipment shipment = shipmentRepository.findByTrackingNumber(trackingNumber)
                 .orElseThrow(() -> new NotFoundException("Shipment with tracking number '" + trackingNumber + "' not found"));
         return toResponse(shipment);
+    }
+
+    public PageResponse<ShipmentResponse> getAll(Long userId,
+                                                 ShipmentStatus status,
+                                                 LocalDateTime createdFrom,
+                                                 LocalDateTime createdTo,
+                                                 Pageable pageable) {
+        Specification<Shipment> spec = ShipmentSpecifications.withFilters(userId, status, createdFrom, createdTo);
+        Page<Shipment> page = shipmentRepository.findAll(spec, pageable);
+
+        List<ShipmentResponse> content = new ArrayList<>();
+        for (Shipment shipment : page.getContent()) {
+            content.add(toResponse(shipment));
+        }
+        return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages());
+    }
+
+    public List<StatusHistoryResponse> getHistory(Long id) {
+        if (!shipmentRepository.existsById(id)) {
+            throw new NotFoundException("Shipment with id=" + id + " not found");
+        }
+        List<ShipmentStatusHistory> historyList = historyRepository.findByShipmentIdOrderByChangedAtAsc(id);
+
+        List<StatusHistoryResponse> result = new ArrayList<>();
+        for (ShipmentStatusHistory history : historyList) {
+            result.add(new StatusHistoryResponse(history.getStatus(), history.getNote(), history.getChangedAt()));
+        }
+        return result;
     }
 
     @Transactional
