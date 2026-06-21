@@ -49,17 +49,7 @@ com.rbt.delivery_tracking
 
 ### Opcija 1 — Docker Compose
 
-Ceo sistem (backend + PostgreSQL) se podiže **jednom komandom**, bez ručne konfiguracije.
-
-1. Napravi `.env` fajl u korenu projekta sa sledećim sadržajem:
-
-```dotenv
-POSTGRES_DB=delivery_tracking
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-```
-
-2. Pokreni:
+Ceo sistem (backend + PostgreSQL) se podiže **jednom komandom**, bez ručne konfiguracije:
 
 ```bash
 docker compose up --build
@@ -67,6 +57,16 @@ docker compose up --build
 
 Aplikacija je dostupna na `http://localhost:8081`.
 PostgreSQL je izložen na `localhost:5433`.
+
+Compose koristi podrazumevane vrednosti (baza `delivery_tracking`, korisnik i lozinka
+`postgres`), pa radi i bez ikakve dodatne konfiguracije. Ako želiš svoje kredencijale,
+napravi `.env` u korenu projekta — vrednosti iz njega override-uju podrazumevane:
+
+```dotenv
+POSTGRES_DB=delivery_tracking
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+```
 
 Zaustavljanje:
 ```bash
