@@ -1,7 +1,6 @@
 package com.rbt.delivery_tracking.importer;
 
 import com.rbt.delivery_tracking.exception.BusinessException;
-import com.rbt.delivery_tracking.importer.dto.ShipmentImportRow;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

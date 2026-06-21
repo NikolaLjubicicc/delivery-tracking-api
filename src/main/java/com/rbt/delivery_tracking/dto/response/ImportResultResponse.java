@@ -1,4 +1,4 @@
-package com.rbt.delivery_tracking.importer.dto;
+package com.rbt.delivery_tracking.dto.response;
 
 import java.util.List;
 

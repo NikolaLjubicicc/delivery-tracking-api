@@ -1,6 +1,6 @@
 package com.rbt.delivery_tracking.importer;
 
-import com.rbt.delivery_tracking.importer.dto.ImportResultResponse;
+import com.rbt.delivery_tracking.dto.response.ImportResultResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
