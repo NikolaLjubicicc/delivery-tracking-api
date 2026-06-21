@@ -71,16 +71,16 @@ class ImportServiceTest {
         when(parserResolver.resolve(any(), any())).thenReturn(parser);
 
         List<ShipmentImportRow> rows = new ArrayList<>();
-        rows.add(new ShipmentImportRow(2, "1", "Laptop", "CREATED"));      // valid
-        rows.add(new ShipmentImportRow(3, "1", "Knjige", "IN_TRANSIT"));   // valid
-        rows.add(new ShipmentImportRow(4, "abc", "Bad userId", ""));       // invalid userId
-        rows.add(new ShipmentImportRow(5, "2", "No such user", "CREATED")); // user not found
-        rows.add(new ShipmentImportRow(6, "1", "Bad status", "FOOBAR"));   // invalid status
+        rows.add(new ShipmentImportRow(2, "marko@example.com", "Laptop", "CREATED"));       // valid
+        rows.add(new ShipmentImportRow(3, "marko@example.com", "Knjige", "IN_TRANSIT"));    // valid
+        rows.add(new ShipmentImportRow(4, "", "Bad email", ""));                            // missing email
+        rows.add(new ShipmentImportRow(5, "nobody@example.com", "No such user", "CREATED")); // user not found
+        rows.add(new ShipmentImportRow(6, "marko@example.com", "Bad status", "FOOBAR"));    // invalid status
         when(parser.parse(any())).thenReturn(rows);
 
         User user = new User("Marko", "marko@example.com", "+381");
         user.setId(1L);
-        when(userRepository.findAllById(any())).thenReturn(List.of(user));
+        when(userRepository.findAllByEmailIn(any())).thenReturn(List.of(user));
         when(shipmentRepository.getNextTrackingSequences(anyInt())).thenReturn(List.of(100L, 101L));
 
         ImportResultResponse result = importService.importShipments(file);

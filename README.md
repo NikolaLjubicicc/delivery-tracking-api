@@ -41,6 +41,7 @@ com.rbt.delivery_tracking
 ├── dto/            Request i Response objekti
 ├── specification/  Dinamičko filtriranje (ShipmentSpecifications)
 ├── importer/       Bulk import (Strategy pattern: CSV i Excel parseri)
+├── config/         OpenAPI (Swagger) konfiguracija
 └── exception/      Globalni exception handling
 ```
 
@@ -164,8 +165,22 @@ Primer kreiranja pošiljke (tracking broj se generiše automatski):
 ```json
 POST /api/v1/shipments
 {
-  "userId": 1,
+  "email": "marko@example.com",
   "description": "Laptop Dell XPS 15"
+}
+```
+
+Primer odgovora (`ShipmentResponse`):
+```json
+{
+  "id": 1,
+  "trackingNumber": "TRK-0000000001",
+  "description": "Laptop Dell XPS 15",
+  "currentStatus": "CREATED",
+  "userId": 1,
+  "userEmail": "marko@example.com",
+  "createdAt": "2026-06-20T10:00:00",
+  "updatedAt": "2026-06-20T10:00:00"
 }
 ```
 
@@ -216,16 +231,16 @@ Očekivane kolone:
 
 | Kolona | Obavezno | Opis |
 |--------|----------|------|
-| `userId` | da | ID postojećeg korisnika |
+| `email` | da | Email postojećeg korisnika |
 | `description` | ne | Opis pošiljke |
 | `status` | ne | Početni status (prazan → `CREATED`) |
 
 Primer CSV-a:
 ```csv
-userId,description,status
-1,Laptop Dell XPS,CREATED
-1,Knjige,IN_TRANSIT
-2,Telefon,
+email,description,status
+marko@example.com,Laptop Dell XPS,CREATED
+marko@example.com,Knjige,IN_TRANSIT
+ana@example.com,Telefon,
 ```
 
 Odgovor sadrži izveštaj o uvozu — validni redovi se snimaju, nevalidni se preskaču i
@@ -236,7 +251,7 @@ prijavljuju sa brojem reda i razlogom:
   "imported": 2,
   "failed": 1,
   "errors": [
-    { "row": 4, "message": "User with id=2 not found" }
+    { "row": 4, "message": "User with email 'ana@example.com' not found" }
   ]
 }
 ```

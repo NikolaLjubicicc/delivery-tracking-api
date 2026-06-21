@@ -65,25 +65,25 @@ public class ImportService {
         List<ImportRowError> errors = new ArrayList<>();
 
         List<ParsedRow> parsedRows = new ArrayList<>();
-        Set<Long> userIds = new HashSet<>();
+        Set<String> emails = new HashSet<>();
         for (ShipmentImportRow row : rows) {
             try {
-                Long userId = parseUserId(row.getUserId());
+                String email = parseEmail(row.getEmail());
                 ShipmentStatus status = parseStatus(row.getStatus());
-                parsedRows.add(new ParsedRow(row.getRowNumber(), userId, row.getDescription(), status));
-                userIds.add(userId);
+                parsedRows.add(new ParsedRow(row.getRowNumber(), email, row.getDescription(), status));
+                emails.add(email);
             } catch (RuntimeException ex) {
                 errors.add(new ImportRowError(row.getRowNumber(), ex.getMessage()));
             }
         }
 
-        Map<Long, User> userMap = loadUsers(userIds);
+        Map<String, User> userMap = loadUsersByEmail(emails);
 
         List<Shipment> validShipments = new ArrayList<>();
         for (ParsedRow parsed : parsedRows) {
-            User user = userMap.get(parsed.userId);
+            User user = userMap.get(parsed.email);
             if (user == null) {
-                errors.add(new ImportRowError(parsed.rowNumber, "User with id=" + parsed.userId + " not found"));
+                errors.add(new ImportRowError(parsed.rowNumber, "User with email '" + parsed.email + "' not found"));
                 continue;
             }
             validShipments.add(new Shipment(null, parsed.description, parsed.status, user));
@@ -95,14 +95,14 @@ public class ImportService {
         return new ImportResultResponse(rows.size(), validShipments.size(), errors.size(), errors);
     }
 
-    private Map<Long, User> loadUsers(Set<Long> userIds) {
-        Map<Long, User> userMap = new HashMap<>();
-        if (userIds.isEmpty()) {
+    private Map<String, User> loadUsersByEmail(Set<String> emails) {
+        Map<String, User> userMap = new HashMap<>();
+        if (emails.isEmpty()) {
             return userMap;
         }
-        List<User> users = userRepository.findAllById(new ArrayList<>(userIds));
+        List<User> users = userRepository.findAllByEmailIn(new ArrayList<>(emails));
         for (User user : users) {
-            userMap.put(user.getId(), user);
+            userMap.put(user.getEmail(), user);
         }
         return userMap;
     }
@@ -136,19 +136,11 @@ public class ImportService {
         }
     }
 
-    private Long parseUserId(String raw) {
+    private String parseEmail(String raw) {
         if (raw == null || raw.isBlank()) {
-            throw new BusinessException("userId is required");
+            throw new BusinessException("email is required");
         }
-        String value = raw.trim();
-        if (value.contains(".")) {
-            value = value.substring(0, value.indexOf('.'));
-        }
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            throw new BusinessException("Invalid userId '" + raw + "'");
-        }
+        return raw.trim();
     }
 
     private ShipmentStatus parseStatus(String raw) {
@@ -164,13 +156,13 @@ public class ImportService {
 
     private static final class ParsedRow {
         private final int rowNumber;
-        private final Long userId;
+        private final String email;
         private final String description;
         private final ShipmentStatus status;
 
-        private ParsedRow(int rowNumber, Long userId, String description, ShipmentStatus status) {
+        private ParsedRow(int rowNumber, String email, String description, ShipmentStatus status) {
             this.rowNumber = rowNumber;
-            this.userId = userId;
+            this.email = email;
             this.description = description;
             this.status = status;
         }

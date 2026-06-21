@@ -1,29 +1,31 @@
 package com.rbt.delivery_tracking.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class CreateShipmentRequest {
 
-    @NotNull(message = "User id is required")
-    private Long userId;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
 
     @Size(max = 500, message = "Description must not exceed 500 characters")
     private String description;
 
     public CreateShipmentRequest() {}
 
-    public CreateShipmentRequest(Long userId, String description) {
-        this.userId = userId;
+    public CreateShipmentRequest(String email, String description) {
+        this.email = email;
         this.description = description;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDescription() {
