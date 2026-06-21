@@ -65,7 +65,7 @@ docker compose up --build
 ```
 
 Aplikacija je dostupna na `http://localhost:8081`.
-PostgreSQL je izložen na `localhost:5433` (da ne dođe do konflikta sa lokalnom instalacijom na 5432).
+PostgreSQL je izložen na `localhost:5433`.
 
 Zaustavljanje:
 ```bash
