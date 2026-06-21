@@ -1,0 +1,11 @@
+target/
+.git/
+.idea/
+*.iml
+.env
+*.md
+shipments*.csv
+shipments*.xlsx
+shipments.xlsx
+generate-shipments.ps1
+HELP.md
