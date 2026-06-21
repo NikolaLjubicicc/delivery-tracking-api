@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 public class Shipment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shipment_id_gen")
+    @SequenceGenerator(name = "shipment_id_gen", sequenceName = "shipment_id_seq", allocationSize = 1000)
     private Long id;
 
     @Column(name = "tracking_number", nullable = false, unique = true, length = 40)

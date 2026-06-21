@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 public class ShipmentStatusHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shipment_status_history_id_gen")
+    @SequenceGenerator(name = "shipment_status_history_id_gen", sequenceName = "shipment_status_history_id_seq", allocationSize = 1000)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
