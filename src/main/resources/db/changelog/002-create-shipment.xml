@@ -7,7 +7,7 @@
 
     <changeSet id="002-create-shipment" author="nikola.ljubicic">
         <createTable tableName="shipment">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="tracking_number" type="VARCHAR(40)">

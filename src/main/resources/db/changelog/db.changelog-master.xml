@@ -10,5 +10,6 @@
     <include file="003-create-shipment-status-history.xml" relativeToChangelogFile="true"/>
     <include file="004-indexes.xml"                       relativeToChangelogFile="true"/>
     <include file="005-create-tracking-sequence.xml"      relativeToChangelogFile="true"/>
+    <include file="006-create-id-sequences.xml"           relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

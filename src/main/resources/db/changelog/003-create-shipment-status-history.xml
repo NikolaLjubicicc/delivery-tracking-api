@@ -7,7 +7,7 @@
 
     <changeSet id="003-create-shipment-status-history" author="nikola.ljubicic">
         <createTable tableName="shipment_status_history">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="shipment_id" type="BIGINT">
