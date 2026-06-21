@@ -266,3 +266,18 @@ Sve greške vraćaju standardizovan format:
   "path": "/api/v1/shipments/99"
 }
 ```
+
+## Testovi
+
+Projekat sadrži unit testove za ključnu biznis logiku (JUnit 5 + Mockito), bez zavisnosti
+od baze, pa se pokreću svuda bez dodatne infrastrukture:
+
+- `ShipmentStatusTest` — pravila prelaza statusa (dozvoljeni/nedozvoljeni prelazi, terminalni statusi)
+- `ShipmentServiceTest` — kreiranje pošiljke, promena statusa, upis istorije, validacija
+- `UserServiceTest` — kreiranje korisnika, duplikat email-a, nepostojeći korisnik
+- `ImportServiceTest` — validacija reda po reda i izveštaj o uvozu (preskakanje nevalidnih redova)
+
+Pokretanje:
+```bash
+./mvnw test
+```
