@@ -51,7 +51,7 @@ class ShipmentServiceTest {
 
     @Test
     void createShipment_success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user()));
+        when(userRepository.findByEmail("marko@example.com")).thenReturn(Optional.of(user()));
         when(shipmentRepository.getNextTrackingSequence()).thenReturn(5L);
         when(shipmentRepository.save(any(Shipment.class))).thenAnswer(invocation -> {
             Shipment shipment = invocation.getArgument(0);
@@ -59,7 +59,7 @@ class ShipmentServiceTest {
             return shipment;
         });
 
-        ShipmentResponse response = shipmentService.createShipment(new CreateShipmentRequest(1L, "Laptop"));
+        ShipmentResponse response = shipmentService.createShipment(new CreateShipmentRequest("marko@example.com", "Laptop"));
 
         assertEquals("TRK-0000000005", response.getTrackingNumber());
         assertEquals(ShipmentStatus.CREATED, response.getCurrentStatus());
@@ -72,10 +72,10 @@ class ShipmentServiceTest {
 
     @Test
     void createShipment_userNotFound() {
-        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("nobody@example.com")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                () -> shipmentService.createShipment(new CreateShipmentRequest(99L, "Laptop")));
+                () -> shipmentService.createShipment(new CreateShipmentRequest("nobody@example.com", "Laptop")));
         verify(shipmentRepository, never()).save(any());
     }
 

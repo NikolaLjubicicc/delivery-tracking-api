@@ -50,7 +50,7 @@ public class ExcelShipmentParser implements ShipmentFileParser {
                 }
                 ShipmentImportRow importRow = new ShipmentImportRow(
                         i + 1,
-                        getCellValue(row, headerIndex, "userid"),
+                        getCellValue(row, headerIndex, "email"),
                         getCellValue(row, headerIndex, "description"),
                         getCellValue(row, headerIndex, "status")
                 );

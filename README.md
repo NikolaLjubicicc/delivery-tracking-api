@@ -41,6 +41,7 @@ com.rbt.delivery_tracking
 ├── dto/            Request i Response objekti
 ├── specification/  Dinamičko filtriranje (ShipmentSpecifications)
 ├── importer/       Bulk import (Strategy pattern: CSV i Excel parseri)
+├── config/         OpenAPI (Swagger) konfiguracija
 └── exception/      Globalni exception handling
 ```
 
@@ -48,17 +49,7 @@ com.rbt.delivery_tracking
 
 ### Opcija 1 — Docker Compose
 
-Ceo sistem (backend + PostgreSQL) se podiže **jednom komandom**, bez ručne konfiguracije.
-
-1. Napravi `.env` fajl u korenu projekta sa sledećim sadržajem:
-
-```dotenv
-POSTGRES_DB=delivery_tracking
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-```
-
-2. Pokreni:
+Ceo sistem (backend + PostgreSQL) se podiže **jednom komandom**, bez ručne konfiguracije:
 
 ```bash
 docker compose up --build
@@ -66,6 +57,16 @@ docker compose up --build
 
 Aplikacija je dostupna na `http://localhost:8081`.
 PostgreSQL je izložen na `localhost:5433`.
+
+Compose koristi podrazumevane vrednosti (baza `delivery_tracking`, korisnik i lozinka
+`postgres`), pa radi i bez ikakve dodatne konfiguracije. Ako želiš svoje kredencijale,
+napravi `.env` u korenu projekta — vrednosti iz njega override-uju podrazumevane:
+
+```dotenv
+POSTGRES_DB=delivery_tracking
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+```
 
 Zaustavljanje:
 ```bash
@@ -164,8 +165,22 @@ Primer kreiranja pošiljke (tracking broj se generiše automatski):
 ```json
 POST /api/v1/shipments
 {
-  "userId": 1,
+  "email": "marko@example.com",
   "description": "Laptop Dell XPS 15"
+}
+```
+
+Primer odgovora (`ShipmentResponse`):
+```json
+{
+  "id": 1,
+  "trackingNumber": "TRK-0000000001",
+  "description": "Laptop Dell XPS 15",
+  "currentStatus": "CREATED",
+  "userId": 1,
+  "userEmail": "marko@example.com",
+  "createdAt": "2026-06-20T10:00:00",
+  "updatedAt": "2026-06-20T10:00:00"
 }
 ```
 
@@ -216,16 +231,16 @@ Očekivane kolone:
 
 | Kolona | Obavezno | Opis |
 |--------|----------|------|
-| `userId` | da | ID postojećeg korisnika |
+| `email` | da | Email postojećeg korisnika |
 | `description` | ne | Opis pošiljke |
 | `status` | ne | Početni status (prazan → `CREATED`) |
 
 Primer CSV-a:
 ```csv
-userId,description,status
-1,Laptop Dell XPS,CREATED
-1,Knjige,IN_TRANSIT
-2,Telefon,
+email,description,status
+marko@example.com,Laptop Dell XPS,CREATED
+marko@example.com,Knjige,IN_TRANSIT
+ana@example.com,Telefon,
 ```
 
 Odgovor sadrži izveštaj o uvozu — validni redovi se snimaju, nevalidni se preskaču i
@@ -236,7 +251,7 @@ prijavljuju sa brojem reda i razlogom:
   "imported": 2,
   "failed": 1,
   "errors": [
-    { "row": 4, "message": "User with id=2 not found" }
+    { "row": 4, "message": "User with email 'ana@example.com' not found" }
   ]
 }
 ```

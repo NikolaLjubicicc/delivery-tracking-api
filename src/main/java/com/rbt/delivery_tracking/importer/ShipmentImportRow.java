@@ -3,15 +3,15 @@ package com.rbt.delivery_tracking.importer;
 public class ShipmentImportRow {
 
     private int rowNumber;
-    private String userId;
+    private String email;
     private String description;
     private String status;
 
     public ShipmentImportRow() {}
 
-    public ShipmentImportRow(int rowNumber, String userId, String description, String status) {
+    public ShipmentImportRow(int rowNumber, String email, String description, String status) {
         this.rowNumber = rowNumber;
-        this.userId = userId;
+        this.email = email;
         this.description = description;
         this.status = status;
     }
@@ -24,12 +24,12 @@ public class ShipmentImportRow {
         this.rowNumber = rowNumber;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDescription() {

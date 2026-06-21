@@ -43,8 +43,8 @@ public class ShipmentService {
 
     @Transactional
     public ShipmentResponse createShipment(CreateShipmentRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NotFoundException("User with id=" + request.getUserId() + " not found"));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException("User with email '" + request.getEmail() + "' not found"));
 
         String trackingNumber = generateTrackingNumber();
 
@@ -146,6 +146,7 @@ public class ShipmentService {
                 shipment.getDescription(),
                 shipment.getCurrentStatus(),
                 shipment.getUser().getId(),
+                shipment.getUser().getEmail(),
                 shipment.getCreatedAt(),
                 shipment.getUpdatedAt()
         );

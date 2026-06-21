@@ -41,7 +41,7 @@ public class CsvShipmentParser implements ShipmentFileParser {
                 rowNumber++;
                 ShipmentImportRow row = new ShipmentImportRow(
                         rowNumber,
-                        getValue(record, "userId"),
+                        getValue(record, "email"),
                         getValue(record, "description"),
                         getValue(record, "status")
                 );
