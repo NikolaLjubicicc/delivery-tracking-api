@@ -46,7 +46,7 @@ com.rbt.delivery_tracking
 
 ## Pokretanje
 
-### Opcija 1 — Docker Compose (preporučeno)
+### Opcija 1 — Docker Compose
 
 Ceo sistem (backend + PostgreSQL) se podiže **jednom komandom**, bez ručne konfiguracije.
 
